@@ -1,21 +1,29 @@
+"""
+SupaSorter, written by Sean Massey, contact sean@positivepython.co.uk
+Built on Python 3.9
+Runs 10 different sorting engines in 2 modes.
+1. A single pass of all the algorithms, using a sample of the users choice, shows timings and a bar chart
+2. Multi-passes of all algorithms, creating a data frame of the data and a plot showing time degredation of all sorts.
+"""
+
 import random, time, copy
 import matplotlib.pyplot as plt
+import pandas as pd
 
-list_of_sorts = ["Python Built In Method", "Selection Sort", "Bubble Sort", "Insertion Sort", "Heap Sort",
-                 "Shell Sort", "Gnome Sort", "Bingo Sort"]
-single_sort_results = {}
-time_taken_to_sort = 0
+list_of_sorts = ["Python Built In Method", "Imnsertion Sort", "Selection Sort", "Bubble Sort", "Heap Sort",
+                 "Shell Sort", "Gnome Sort", "Cocktail Sort", "Bingo Sort", "Comb Sort"]
+single_sort_results = {} #Dictionary for creating the single sort bar chart
+multi_sort_results = []
 
-# Generates the inital list of unsorted numbers, possible improvements
-    # Consider making it so no number is repeated
-    # Run loops for increasing lengths of sorts, store results in Pandas and output graphs
-    # Research more effecient lists
-    # make a procedure of the claculation and print of the time taken
-    # Find new sorts to put in
+"""
+Possible upgrades
+    # refactor so claculation and print of the time taken s only needed once
+    # Invite people to refine sorts
     # In the reporting put into the output details of hardware, OS etc.....
     # Export the results in to JSON or XLS
     # Run the sorts through a list
     # Improve the timing mechanism so it is slicker timeit?
+"""
 
 def generate_pre_sort_list(base_data):
     global pre_sort_numbers
@@ -28,7 +36,7 @@ def generate_pre_sort_list(base_data):
 
 
 def python_sort(pre_sort_numbers):
-    global python_sort_result
+    global python_sort_result, time_taken_to_sort
     python_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     
@@ -37,10 +45,10 @@ def python_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Python's in built sort method.")
     
-    add_to_single_sort_barchart("Python Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Python Sort", time_taken_to_sort)
 
 def selection_sort(pre_sort_numbers):
-    global selection_sort_result
+    global selection_sort_result, time_taken_to_sort
     selection_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     
@@ -54,10 +62,10 @@ def selection_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Selection Sort.")
     
-    add_to_single_sort_barchart("Selection Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Selection Sort", time_taken_to_sort)
 
 def bubble_sort(pre_sort_numbers):
-    global bubble_sort_result
+    global bubble_sort_result, time_taken_to_sort
     bubble_sort_result = copy.copy(pre_sort_numbers)
     
     n = len(bubble_sort_result)
@@ -70,10 +78,10 @@ def bubble_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Bubble Sort.")
     
-    add_to_single_sort_barchart("Bubble Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Bubble Sort", time_taken_to_sort)
 
 def insertion_sort(pre_sort_numbers):
-    global insertion_sort_result
+    global insertion_sort_result, time_taken_to_sort
     insertion_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     
@@ -88,7 +96,7 @@ def insertion_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Insertion Sort.")
     
-    add_to_single_sort_barchart("Insertion Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Insertion Sort", time_taken_to_sort)
 
 def heapify(arr, N, i):
     largest = i  # Initialize largest as root
@@ -113,7 +121,7 @@ def heapify(arr, N, i):
         heapify(arr, N, largest) 
  
 def heap_sort(pre_sort_numbers):
-    global heap_sort_result
+    global heap_sort_result, time_taken_to_sort
     heap_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     
@@ -131,10 +139,10 @@ def heap_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Heap Sort.")
     
-    add_to_single_sort_barchart("Heap Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Heap Sort", time_taken_to_sort)
 
 def shell_sort(pre_sort_numbers, n):
-    global shell_sort_result
+    global shell_sort_result, time_taken_to_sort
     shell_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
 
@@ -163,10 +171,10 @@ def shell_sort(pre_sort_numbers, n):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Shell Sort.")
     
-    add_to_single_sort_barchart("Shell Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Shell Sort", time_taken_to_sort)
 
 def gnome_sort(pre_sort_numbers):
-    global gnome_sort_result
+    global gnome_sort_result, time_taken_to_sort
     gnome_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     n=len(gnome_sort_result)
@@ -184,10 +192,10 @@ def gnome_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Gnome Sort.")
     
-    add_to_single_sort_barchart("Gnome Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Gnome Sort", time_taken_to_sort)
     
 def cocktail_sort(pre_sort_numbers):
-    global cocktail_sort_result
+    global cocktail_sort_result, time_taken_to_sort
     cocktail_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     n = len(cocktail_sort_result)
@@ -226,10 +234,10 @@ def cocktail_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Cocktail Sort.")
     
-    add_to_single_sort_barchart("Cocktail Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Cocktail Sort", time_taken_to_sort)
 
 def bingo_sort(pre_sort_numbers, size):
-    global bingo_sort_result
+    global bingo_sort_result, time_taken_to_sort
     bingo_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
   
@@ -258,7 +266,7 @@ def bingo_sort(pre_sort_numbers, size):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Bingo Sort.")
     
-    add_to_single_sort_barchart("Bingo Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Bingo Sort", time_taken_to_sort)
     
 # 2 Functions to deliver Comb Sort
   
@@ -273,7 +281,7 @@ def get_next_gap(gap):
   
 # Function to sort arr[] using Comb Sort
 def comb_sort(pre_sort_numbers):
-    global comb_sort_result
+    global comb_sort_result, time_taken_to_sort
     comb_sort_result = copy.copy(pre_sort_numbers)
     start_time = time.time()
     n = len(comb_sort_result)
@@ -302,7 +310,7 @@ def comb_sort(pre_sort_numbers):
     time_taken_to_sort = time.time() - start_time
     print(f"It took {time_taken_to_sort:.2f} seconds to use Comb Sort.")
     
-    add_to_single_sort_barchart("Comb Sort", time_taken_to_sort)
+    add_to_single_sort_dataset("Comb Sort", time_taken_to_sort)
 
 # Checks to make sure all the sorted lists match the Python sort method list, as you add sorts, add the result list to list_of_sorted_lists 
 def check_sorted_lists():
@@ -314,8 +322,14 @@ def check_sorted_lists():
             print(f"The sorted lists are not identical, {sorted_list} broke the pattern.")
     print("All the sorted lists are the identical.")
 
-def add_to_single_sort_barchart(sort_type, time_taken):
+def add_to_single_sort_dataset(sort_type, time_taken):
     single_sort_results[sort_type] = time_taken
+    
+def add_to_multi_sort_dataset(sort_type, test_set_length, time_test_took):
+    multi_sort_results.append([sort_type, test_set_length, time_test_took])
+
+
+
 
 # Main Program
 print("Welcome To Sean's Supa Sorter Analyser!")
@@ -351,14 +365,13 @@ if test_type == 1:
     plt.figure(figsize=(15, 4))
     plt.bar(x, y)
     plt.xlabel("Sort Engines")
-    plt.ylabel("Time Taken (seconds")
+    plt.ylabel("Time Taken (seconds)")
     plt.title("Different Sort Engines in Python Sorting %i Integers" %sort_list_length)
     plt.show()
     
 elif test_type == 2:
-    test_cycles = [100, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]
     
-    for test in test_cycles:
+    for test in range(100, 10000, 100):
         print(f"Here are the results for a sample of {test} numbers.")
         
         # generate_pre_sort_list(test)
@@ -366,19 +379,29 @@ elif test_type == 2:
         
         # provides the benchmark sort using .sort method.
         python_sort(pre_sort_numbers) 
-
+        add_to_multi_sort_dataset("Python Sort", test, time_taken_to_sort)
         # These are the various sorts I have built so far
         insertion_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Insertion Sort", test, time_taken_to_sort)
         selection_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Selection Sort", test, time_taken_to_sort)
         bubble_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Bubble Sort", test, time_taken_to_sort)
         heap_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Heap Sort", test, time_taken_to_sort)
         shell_sort(pre_sort_numbers, len(pre_sort_numbers))
+        add_to_multi_sort_dataset("Shell Sort", test, time_taken_to_sort)
         gnome_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Gnome Sort", test, time_taken_to_sort)
         cocktail_sort(pre_sort_numbers)
+        add_to_multi_sort_dataset("Cocktail Sort", test, time_taken_to_sort)
         bingo_sort(pre_sort_numbers, len(pre_sort_numbers))
+        add_to_multi_sort_dataset("Bingo Sort", test, time_taken_to_sort)
         comb_sort(pre_sort_numbers)
-        
+        add_to_multi_sort_dataset("Comb Sort", test, time_taken_to_sort)
         print()
-
-
-
+        
+    df = pd.DataFrame(multi_sort_results, columns=['Test Type', 'Sample Size', 'Sort Speed'])
+    df = df.pivot(index='Sample Size', columns='Test Type', values="Sort Speed")
+    df.plot(figsize=(15,10), title="Performace of Different Sort Algorithms", ylabel='Time Taken to Sort(seconds)')
+    plt.show()
